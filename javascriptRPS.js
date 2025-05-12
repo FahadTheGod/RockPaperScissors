@@ -10,39 +10,89 @@ function round(_round) {
   console.log(`Round ${_round}: `);
 }
 
+const rpsButtons_ = document.querySelectorAll(".rpsBtn");
+
+const allInputDiv_ = document.createElement("div");
+allInputDiv_.classList.add("picks");
+
+document.body.appendChild(allInputDiv_);
+
+const userPickText_ = document.createElement("p");
+userPickText_.classList.add("user-choice");
+allInputDiv_.appendChild(userPickText_);
+userPickText_.textContent = "You picked: ";
+
+const computerPickText_ = document.createElement("p");
+computerPickText_.classList.add("computer-choice");
+allInputDiv_.appendChild(computerPickText_);
+computerPickText_.textContent = "Computer picked: ";
+
+const winnerText_ = document.createElement("h3");
+winnerText_.classList.add("winner");
+allInputDiv_.appendChild(winnerText_);
+winnerText_.textContent = "Winner: None";
+
+playerScoreText_ = document.createElement("p");
+playerScoreText_.classList.add("score");
+allInputDiv_.appendChild(playerScoreText_);
+playerScoreText_.textContent = "Your Score: 0";
+
+computerScoreText_ = document.createElement("p");
+computerScoreText_.classList.add("score");
+allInputDiv_.appendChild(computerScoreText_);
+computerScoreText_.textContent = "Computer Score: 0";
+
+finalWinnerText_ = document.createElement("p");
+finalWinnerText_.classList.add("final-winner");
+allInputDiv_.appendChild(finalWinnerText_);
+finalWinnerText_.textContent = "Winner is: ";
+// Or we cna add function() {} instead of () => {}
+for (let i = 0; i < rpsButtons_.length; i++) {
+  rpsButtons_[i].addEventListener("click", () => {
+    click_button(rpsButtons_[i]);
+  });
+}
+
+//rpsButtons_.forEach(button => {
+//  button.addEventListener("click", () => click_button(button));
+//});
+
+function click_button(_button) {
+  if (userScore_ == 5 || computerScore_ == 5) {
+    userScore_ = 0;
+    computerScore_ = 0;
+    computerScoreText_.textContent = "Computer Score: 0";
+    playerScoreText_.textContent = `Your Score: 0`;
+  }
+  let userChoice_ = _button.getAttribute("data-choice");
+  get_computer_choice();
+
+  if (userChoice_ == "rock") {
+    userNumber_ = 0;
+    userPickText_.textContent = `You picked: ${userChoice_}`;
+  } else if (userChoice_ == "paper") {
+    userPickText_.textContent = `You picked: ${userChoice_}`;
+    userNumber_ = 1;
+  } else if (userChoice_ == "scissors") {
+    userNumber_ = 2;
+    userPickText_.textContent = `You picked: ${userChoice_}`;
+  }
+  play_round(userNumber_, computerNumber_);
+}
+
 // Computer Choice
 function get_computer_choice() {
   computerNumber_ = Math.floor(Math.random() * 3);
 
   if (computerNumber_ == 0) {
-    console.log("Computer picked Rock!");
+    computerPickText_.textContent = "Computer picked: Rock!";
   } else if (computerNumber_ == 1) {
-    console.log("Computer picked Paper!");
+    computerPickText_.textContent = "Computer picked: Paper!";
   } else if (computerNumber_ == 2) {
-    console.log("Computer picked Scissors!");
+    computerPickText_.textContent = "Computer picked: Scissors!";
   }
 
   return computerNumber_;
-}
-// Player Choice
-function get_player_choice() {
-  // User input
-  let userInput_ = prompt("Pick Rock, Paper or Scissors: ");
-  // User input capitalized
-  let userInputCaptialized_ = userInput_.toUpperCase();
-
-  if (userInputCaptialized_ == "ROCK") {
-    userNumber_ = 0;
-    console.log(`You picked: ${userInputCaptialized_}`);
-  } else if (userInputCaptialized_ == "PAPER") {
-    userNumber_ = 1;
-    console.log(`You picked: ${userInputCaptialized_}`);
-  } else if (userInputCaptialized_ == "SCISSORS") {
-    userNumber_ = 2;
-    console.log(`You picked: ${userInputCaptialized_}`);
-  }
-
-  return userNumber_;
 }
 
 function play_round(_playerChoice, _computerChoice) {
@@ -51,66 +101,60 @@ function play_round(_playerChoice, _computerChoice) {
     case 0:
       // Computer choice is Rock
       if (_computerChoice == 0) {
-        console.log("It's a Tie!");
+        winnerText_.textContent = "Winner: It's a tie!";
       }
       // Computer choice is Paper
       else if (_computerChoice == 1) {
-        console.log("Computer Paper beats your Rock!");
+        winnerText_.textContent = "Winner: Computer wins!";
         computerScore_++;
+        computerScoreText_.textContent = `Computer Score: ${computerScore_}`;
       }
       // Computer choice is Scissors
       else if (_computerChoice == 2) {
-        console.log("Your Rock beats Computers' Scissors!");
+        winnerText_.textContent = "Winner: You win!";
         userScore_++;
+        playerScoreText_.textContent = `Your Score: ${userScore_}`;
       }
       break;
     case 1:
       if (_computerChoice == 0) {
-        console.log("Your Paper beats Computers' Rock");
+        winnerText_.textContent = "Winner: You win!";
         userScore_++;
+        playerScoreText_.textContent = `Your Score: ${userScore_}`;
       } else if (_computerChoice == 1) {
-        console.log("It's a Tie!");
+        winnerText_.textContent = "Winner: It's a tie!";
       } else if (_computerChoice == 2) {
-        console.log("Computer Scissors beats your Paper");
+        winnerText_.textContent = "Winner: Computer wins!";
         computerScore_++;
+        computerScoreText_.textContent = `Computer Score: ${computerScore_}`;
       }
       break;
     case 2:
       if (_computerChoice == 0) {
-        console.log("Computer Rock beats your Scissors!");
+        winnerText_.textContent = "Winner: Computer wins!";
         computerScore_++;
+        computerScoreText_.textContent = `Computer Score: ${computerScore_}`;
       } else if (_computerChoice == 1) {
-        console.log("Your Scissors beats Computers' Rock!");
+        winnerText_.textContent = "Winner: You win!";
         userScore_++;
+        playerScoreText_.textContent = `Your Score: ${userScore_}`;
       } else if (_computerChoice == 2) {
-        console.log("It's a Tie!");
+        winnerText_.textContent = "Winner: It's a tie!";
       }
       break;
   }
-}
 
-function check_score(_userScore, _computerScore) {
-  if (_userScore > _computerScore) {
-    console.log("You beat the computer!");
-  } else if (_computerScore > _userScore) {
-    console.log("The computer beat you!");
-  } else {
-    console.log("The final score is a tie!!");
-  }
-}
-
-function play_game() {
-  for (let i = 1; i < 6; i++) {
-    round(i);
-    const _playerPick = get_player_choice();
-    const _computerPick = get_computer_choice();
-    play_round(_playerPick, _computerPick);
-  }
-
-  console.log(
-    `Your score is ${userScore_} and the computer score is ${computerScore_}`
-  );
   check_score(userScore_, computerScore_);
 }
 
-play_game();
+function check_score(_userScore, _computerScore) {
+  if (userScore_ != 5 && computerScore_ != 5) return;
+  if (_userScore > _computerScore) {
+    finalWinnerText_.textContent = `Winner is: You beat the computer ${userScore_} to ${computerScore_}!`;
+    console.log(``);
+  } else if (_computerScore > _userScore) {
+    finalWinnerText_.textContent = `Winner is: The computer beat you ${computerScore_} to ${userScore_}!`;
+  } else {
+    finalWinnerText_.textContent = `Winner is: It's a tie!`;
+  }
+}
